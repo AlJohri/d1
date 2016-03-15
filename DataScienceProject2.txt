@@ -1,0 +1,26 @@
+﻿Highly skewed datasets and how to achieve high prediction performance on the minority class.
+
+1. imbalanced classification: Cost-sensitive supervised learning algorithms
+Given labeled examples from the minority (rare) class, and it tries to improve prediction performance especially on the minority class.
+   1. Cost-sensitive KNN (C-KNN), assigning class-based weights to each instance, thus weighing the votes of the neighbors.
+   2. Cost-sensitive SVM most commonly used methods in imbalanced classification.
+   3. Cost-sensitive Logistic Regression
+   4. Performance comparison s.t. F-1 scores
+compare the performances of cost-sensitive k-NN, cost-sensitive SVM, and cost-sensitive logistic regression
+   5. Multiple Kernel Learning for Imbalanced Classification
+      1. Unsupervised Anomaly Detection a.k.a. rare class detection
+Aims to detect the rare classes de-novo from a few examples.
+Detection of rare categories when no labeled samples are available a-priori 
+Unsupervised Anomaly Detection - often unsupervised (or labels are known only for the “normal” data).
+         1. three separate classification experiments: 
+         1. Positive Compact
+assumes that the minority class is compact and learns only from the minority class (with nNegative instances from the majority class added in the training set),
+         2. Negative Compact
+the second experiment assumes that the majority class is compact and learns only from the majority class (with nPositive instances from the minority class added in the training set). 
+         3. one-class SVM.
+use all data, regardless of their labels. 
+            1. Results analysis as measure the F-1 score of Positive Compact, Negative Compact, one-class SVM and cost-sensitive logistic regression on highly skewed datasets
+            1. All experiments use Gaussian RBF kernel / Python Scikit-learn one-class SVM classifier
+            2. Multiple Kernel Learning approach with compactness assumption
+            1. Compare the MKL approach to random under sam-pling (RUS), one-class SVM, and cost-sensitive logistic regression
+==============================
