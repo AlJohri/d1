@@ -1,3 +1,7 @@
+﻿I have some 4-6 oil crisis starting dates during 1990-2019. It is a highly skewed data, considering the total number of observations in the oil price series (monthly, 1990-2015 equals 12x(2015-1990)=12x25=300 data points x).
+﻿Below is my outline of how to deal with a highly skewed data.
+﻿---------------------------------------------------
+﻿
 ﻿Highly skewed datasets and how to achieve high prediction performance on the minority class.
 
 1. imbalanced classification: Cost-sensitive supervised learning algorithms
