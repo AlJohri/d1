@@ -5,13 +5,14 @@ from math import exp
 __author__ = 'Liana'
 
 import pandas as pd
+import matplotlib as mpl
 import matplotlib.pyplot as plt
 import seaborn as sns
 import statsmodels.api as sm
 import scipy.stats as st
 import numpy as np
 import statsmodels.tsa.arima_process as ap
-# from statsmodels.tsa.arima_model import ARIMA
+from statsmodels.tsa.arima_model import ARIMA
 from statsmodels.graphics.api import qqplot
 
 #RK
@@ -21,8 +22,20 @@ from scipy.interpolate import interp1d
 import scipy.interpolate as inter
 from scipy.signal import argrelextrema
 from operator import itemgetter
-import operator
+import os, operator, requests
 
+try:
+    os.makedirs("data/")
+except OSError:
+    pass
+
+excel_filename = "PET_PRI_SPT_S1_M.xls"
+if not os.path.isfile(excel_filename):
+    # Download data from: http://www.eia.gov/dnav/pet/pet_pri_spt_s1_m.htm
+    print("Downloading %s" % excel_filename)
+    response = requests.get("http://www.eia.gov/dnav/pet/xls/%s" % excel_filename)
+    with open("data/" + excel_filename, "wb") as f:
+        f.write(response.content)
 
 def to_integer(dt_time):
 #    return 10000*dt_time.year + 1000*dt_time.month + dt_time.day
@@ -35,10 +48,8 @@ def to_integer(dt_time):
 # Important: It might be necessary to install xlrd
 # pip install xlrd
 
-# Download data from: http://www.eia.gov/dnav/pet/pet_pri_spt_s1_m.htm
 # Create an Excel file object
-adir='/home/romank/Desktop/DataScience/CrudeOilPricesTimeSeriesAnalysis_Python-master/';
-excel = pd.ExcelFile(adir + 'data/PET_PRI_SPT_S1_M.xls' )
+excel = pd.ExcelFile("data/" + excel_filename)
 
 # Parse the first sheet
 df = excel.parse(excel.sheet_names[1])
@@ -50,7 +61,7 @@ df = df.rename(columns=dict(zip(df.columns, ['Date','WTI','Brent'])))
 # contain NaN values for the Brent prices
 df = df[18:]
 
-#print df.head()
+#print(df.head())
 
 # Index the data set by date
 df.index = df['Date']
@@ -60,11 +71,11 @@ x=df['Date']
 df = df[['WTI','Brent']]
 
 import sys
-print 'current trace function', sys.gettrace()
+print('current trace function', sys.gettrace())
 
 #import pydevd
 #pydevd.settrace()
-#print df
+#print(df)
 
 #===========================
 #      VISUALISATION
@@ -299,7 +310,7 @@ plt.legend(loc='upper left')
 plt.show()
 
 
-#print newdf.head()
+#print(newdf.head())
 
 
 
@@ -319,7 +330,7 @@ dates1 = dates_from_range('2012m1', length=len(trainWTI.WTI))
 trainWTI.index = dates1
 trainWTI = trainWTI[['WTI']]
 
-print trainWTI.tail()
+print(trainWTI.tail())
 
 # Determine whether AR or MA terms are needed to correct any
 # autocorrelation that remains in the series.
@@ -348,7 +359,7 @@ plt.show()
 
 # Parameter freq indicates that monthly statistics is used
 arima_mod100 = ARIMA(trainWTI, (2,0,0), freq='M').fit()  # try (1,0,1)
-print arima_mod100.summary()
+print(arima_mod100.summary())
 
 # Check assumptions:
 # 1) The residuals are not correlated serially from one observation to the next.
@@ -356,9 +367,9 @@ print arima_mod100.summary()
 # The value of the Durbin-Watson statistic ranges from 0 to 4.
 # As a general rule of thumb, the residuals are uncorrelated is the Durbin-Watson statistic is approximately 2.
 # A value close to 0 indicates strong positive correlation, while a value of 4 indicates strong negative correlation.
-print "==================== Durbin-Watson ====================="
-print sm.stats.durbin_watson(arima_mod100.resid.values)
-print "========================================================"
+print("==================== Durbin-Watson =====================")
+print(sm.stats.durbin_watson(arima_mod100.resid.values))
+print("========================================================")
 
 fig = plt.figure(figsize=(10,5))
 ax = fig.add_subplot(111)
@@ -368,9 +379,9 @@ plt.show()
 
 resid = arima_mod100.resid
 
-print "============== Residuals normality test ================"
-print st.normaltest(resid)
-print "========================================================"
+print("============== Residuals normality test ================")
+print(st.normaltest(resid))
+print("========================================================")
 
 fig = plt.figure(figsize=(10,5))
 ax = fig.add_subplot(111)
